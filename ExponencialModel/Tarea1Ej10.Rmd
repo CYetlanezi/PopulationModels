@@ -1,0 +1,34 @@
+---
+title: "Tarea 1 - Ejercicio 10"
+author: "Claudia Meneses"
+date: "23/8/2019"
+output: html_document
+---
+```{r setup, include=FALSE}
+library(readr) # CSV file I/O, e.g. the read_csv function
+library(dplyr)
+#Cargar data
+system("ls ../input")
+data <- read_csv("/Users/claudiameneses/desktop/ModelosPoblaciones/censo.csv")
+datos <- data.frame(data[c(1,2)])
+```
+
+La tabla dada muestra los datos del censo de población de en los Estados Unidos de 1790 a 1990. Suponiendo que esos datos se ajustan a un modelo de crecimiento exponencial $x(t) = x(0)e^{rt}$, o $ln(x(t)) = ln(x(0)) + rt$. Por medio del métoddo de mínimos cuadradros se estimo el valor de $r$, el cuál resulto ser de $0.02078579$. El valor estimado por el método para $b$ es de $-21.63023$.
+
+```{r}
+y <- log(datos$Población)
+x <- datos$Año
+sxx <- (length(x) - 1)*var(x)
+sxy <- sum((x - mean(x))*(y - mean(y)))
+r <- sxy/sxx
+r 
+b <- mean(y) - r*mean(x)
+b
+```
+
+Acontinuación se muestra una gráfica con los datos estimados en color rojo y los datos dados en violeta. Se puede observar que el modelo ofrece una buena estimación. Sin embargo, a mayor tiempo, se deteriora la asertividad del modelo.
+
+```{r}
+plot(datos$Año,datos$Población, main="Población en Estados Unidos", col="blueviolet", xlab = "Año", ylab = "Población")
+points(datos$Año,(exp(b))*exp(r*(datos$Año)), col="red")
+```
